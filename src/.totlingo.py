@@ -48,7 +48,7 @@ class ChildProfile:
             # Verify that profile directory exists and return profile/directory name
             if os.path.exists(child_name):
                 print(f"Logged in as {child_name}.\n")
-                return ChildProfile(child_name, None)
+                return ChildProfile(child_name)
             else:
                 print("Profile not found. Please try again.\n")
 
@@ -91,6 +91,34 @@ class VocabularyTracker:
         self.add_words_to_file(words)
         self.add_phrase_to_file(text)
 
+
+class TextAnalyzer:
+    def __init__(self, tracked_words_file):
+        self.tracked_words_file = tracked_words_file
+
+    def get_word_counts(self):
+        word_counts = {}
+
+        if os.path.isfile(self.tracked_words_file):
+            with open(self.tracked_words_file, "r") as file:
+                for line in file:
+                    word, count, first_date, last_date = line.strip().split(",")
+                    word_counts[word] = int(count)
+
+        return word_counts
+
+    def top_n_words(self, n=10):
+        word_counts = self.get_word_counts()
+        sorted_word_counts = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
+
+        return sorted_word_counts[:n]
+
+    def display_top_n_words(self, n=10):
+        top_words = self.top_n_words(n)
+        print(f"Top {n} words with the highest counts:")
+        for i, (word, count) in enumerate(top_words, start=1):
+            print(f"{i}. {word} - {count}")
+
 def main_menu():
     while True:
         print("Please select an option:")
@@ -119,3 +147,6 @@ if __name__ == "__main__":
         text = input("Enter a text string: ")
         vocabulary_tracker = VocabularyTracker(child_profile)
         vocabulary_tracker.process_text(text)
+
+        text_analyzer = TextAnalyzer(vocabulary_tracker.tracked_words_file)
+        text_analyzer.display_top_n_words()
