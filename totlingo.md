@@ -1,11 +1,5 @@
 ## To Do
 
-- Menu Mockups
-    * [ ] Main Menu
-    * [ ] Logged-In Menu
-    * [ ] Data Entry Menu
-    * [ ] Analysis Menu
-- Data Design
 - Implement User Authorization and Authentication
     * [ ] Create New Profile
     * [ ] Remove Existing Profile
@@ -25,9 +19,20 @@
     * [ ] 2. Algotrithms for Analysis Reporting
 - Testing and QA
     * [ ] Test for bugs and usability issues.
+- Develop Tokenization Algorithm
+    * [ ] Split string into tokens
+    * [ ] Remove [!,'.?] characters
+    * [ ] Convert to lowercase
 
 ## Doing
 
 
 ## Done
 
+- Menu Mockups
+    * [x] Main Menu
+    * [x] Logged-In Menu
+    * [x] Data Entry Menu
+    * [x] Analysis Menu
+- Data Design
+    > "carrot", 2023-09-01(first utterance) ,2023-09-27(last utterance), 1(times uttered)
