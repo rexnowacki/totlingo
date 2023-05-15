@@ -18,14 +18,13 @@ class ChildProfile:
     
     # Static method to validate name
     @staticmethod
-    def is_valid_name(self):
+    def is_valid_name(name):
         # Name must be non-empty and can only contain alphanumerics
         return bool(name) and name.isalpha()
 
     # Static method to create a new child profile
     @staticmethod
     def create_new_profile():
-        
         # Prompt the user for child's name
         child_name = input("Enter the child's name: ")
         # Check if name is valid and profile doesn't already exist 
@@ -61,7 +60,7 @@ class ChildProfile:
             child_name = input("Enter the child's name for the profile: ").lower()
             # Verify that profile directory exists and return profile/directory name
             if os.path.exists(child_name):
-                print(f"Logged in as {child_name}.\n")
+                print(f"Logged in as {child_name.capitalize()}.\n")
                 return ChildProfile(child_name)
             else:
                 print("Profile not found.\n")
@@ -81,10 +80,11 @@ class VocabularyTracker:
             with open(self.tracked_words_file, "r") as file:
                 for line in file:
                     word, count, first_date, last_date = line.strip().split(",")
-                    existing_words[word] = (int(count), first_date, last_date)
+                    existing_words[word.lower()] = (int(count), first_date, last_date)
 
         current_date = str(datetime.date.today())
         for word in words:
+            word = word.lower() # convert word to lowercase
             if word in existing_words:
                 count, first_date, _ = existing_words[word]
                 existing_words[word] = (count + 1, first_date, current_date)
@@ -116,13 +116,18 @@ class VocabularyTracker:
 
     def process_text(self, text):
         text = text.translate(str.maketrans('', '', string.punctuation))
-        words = text.split()
+        words = text.lower().split()
         self.add_words_to_file(words)
         self.add_phrase_to_file(text)
 
 class TextAnalyzer:
     def __init__(self, tracked_words_file):
         self.tracked_words_file = tracked_words_file
+        self.stop_words = self.read_stop_words()
+
+    def read_stop_words(self):
+        with open('stop_words.txt', 'r') as f:
+            return set(word.strip() for word in f.read().split(','))
 
     def get_word_counts(self):
         word_counts = {}
@@ -131,22 +136,54 @@ class TextAnalyzer:
             with open(self.tracked_words_file, "r") as file:
                 for line in file:
                     word, count, first_date, last_date = line.strip().split(",")
-                    word_counts[word] = int(count)
+                    if word not in self.stop_words:
+                        word_counts[word] = int(count)
 
         return word_counts
 
-    def top_n_words(self, n=10):
+    def top_n_words(self, n=30):
         word_counts = self.get_word_counts()
         sorted_word_counts = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
 
         return sorted_word_counts[:n]
 
-    def display_top_n_words(self, n=10):
+    def display_top_n_words(self, n=30):
         top_words = self.top_n_words(n)
         print(f"Top {n} words with the highest counts:")
         for i, (word, count) in enumerate(top_words, start=1):
             print(f"{i}. {word} - {count}")
 
+    def word_usage_ratio(self, word):
+        word_counts = self.get_word_counts()
+        word = word.lower()
+
+        if word not in word_counts:
+            print(f"The word '{word}' has not been used.")
+            return 0
+        total_words = sum(word_counts.values())
+        word_count = word_counts[word]
+        usage_ratio = word_count / total_words
+        
+        print(f"The word '{word}' has been used {word_count} times.")
+        print(f"Total number of words used is {total_words}.")
+        print(f"The usage ratio of the word '{word}' is {usage_ratio:.2%}.")
+        
+        return usage_ratio
+    def count_unique_words(self):
+        word_counts = self.get_word_counts()
+        unique_words = len(word_counts)
+        print(f"The total number of unique words is {unique_words}.")
+        return unique_words
+    
+    def longest_words(self, n=15):
+        word_counts = self.get_word_counts()
+        sorted_words = sorted(word_counts.keys(), key=len, reverse=True)
+        longest_words = sorted_words[:n]
+
+        print(f"The {n} longest words are:")
+        for i, word in enumerate(longest_words, start=1):
+            print(f"{i}. {word} - {len(word)} characters")
+        return longest_words
 
 class Menu:
     @staticmethod
@@ -156,6 +193,7 @@ class Menu:
             print("1. Create a New Profile")
             print("2. Login")
             print("3. Remove a Profile")
+            print("4. Quit")
             choice = input("Enter the number of your choice: ")
 
             if choice == "1":
@@ -166,6 +204,8 @@ class Menu:
                 break
             elif choice == "3":
                 ChildProfile.remove_profile()
+            elif choice == "4":
+                exit()
             else:
                 print("Invalid choice. Please try again.\n")
         return child_profile
@@ -184,6 +224,32 @@ class Menu:
                 return False
             else:
                 print("Invalid choice. Please try again.\n")
+
+    @staticmethod
+    def analysis_menu(text_analyzer):
+       while True:
+            print("Analysis menu:")
+            print("1. Longest Words")
+            print("2. Word Usage Ratio")
+            print("3. Count Unique Words")
+            print("4. Analyze Specific Word")
+            print("5. Return to Previous Menu")
+            choice = input("Enter the number of your choice: ")
+
+            if choice == "1":
+                text_analyzer.longest_words()
+            elif choice == "2":
+                text_analyzer.word_usage_ratio()
+            elif choice == "3":
+                text_analyzer.count_unique_words()
+            elif choice == "4":
+                word = input("Enter a word to analyze: ")
+                text_analyzer.word_usage_ratio(word)
+            elif choice == "5":
+                break
+            else:
+                print("Invalid choice. Please try again.\n")
+
     
     
     @staticmethod
@@ -191,7 +257,7 @@ class Menu:
         while True:
             print("Logged in menu:")
             print("1. Enter speech data")
-            print("2. Go to analysis menu")
+            print("2. Analysis menu")
             print("3. Return to log-in")
             print("4. Quit")
             choice = input("Enter the number of your choice: ")
@@ -201,10 +267,19 @@ class Menu:
                 vocabulary_tracker.track_new_files()
                 text = input("Enter a text string: ")
                 vocabulary_tracker.process_text(text)
+                print("Files updated.")
             elif choice == "2":
+                vocabulary_tracker = VocabularyTracker(child_profile)
                 if vocabulary_tracker is not None:
                     text_analyzer = TextAnalyzer(vocabulary_tracker.tracked_words_file)
+                    Menu.analysis_menu(text_analyzer)
+                    """
                     text_analyzer.display_top_n_words()
+                    word = input("Word to analyze: ")
+                    text_analyzer.word_usage_ratio(word)
+                    text_analyzer.count_unique_words()
+                    text_analyzer.longest_words()
+                    """                
                 else:
                     print("No speech data entered yet.")
             elif choice == "3":

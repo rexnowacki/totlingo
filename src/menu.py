@@ -1,6 +1,7 @@
 from childprofile import ChildProfile
 from vocabtracker import VocabularyTracker
 from textanalyzer import TextAnalyzer
+
 class Menu:
     @staticmethod
     def main_menu():
@@ -54,6 +55,7 @@ class Menu:
                 vocabulary_tracker = VocabularyTracker(child_profile)
                 vocabulary_tracker.process_text(text)
             elif choice == "2":
+                vocabulary_tracker = VocabularyTracker(child_profile)
                 if vocabulary_tracker is not None:
                     text_analyzer = TextAnalyzer(vocabulary_tracker.tracked_words_file)
                     text_analyzer.display_top_n_words()
