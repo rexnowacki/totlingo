@@ -64,6 +64,7 @@ class ChildProfile:
                 return ChildProfile(child_name)
             else:
                 print("Profile not found.\n")
+                return None
                 child_profile = Menu.main_menu()
 
 class VocabularyTracker:
