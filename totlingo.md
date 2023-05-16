@@ -1,21 +1,11 @@
 ## To Do
 
-- Develop Data Entry Menu
-    * [ ] 1. Enter Speech Data
-    * [ ] 2. Return to Log-In Menu
-    * [ ] 3. Data Validation and Error Handling
 - Develop Analysis Report Menu
     * [x] 1. See Most Used Words
     * [x] 2. See Usage of Specific Word
-    * [ ] 3. See Recently Added Words
+    * [x] 3. See Recently Added Words
     * [x] 4. See Total Words
     * [x] 5. See Longest Words
-- Testing and QA
-    * [ ] Test for bugs and usability issues.
-- Develop Tokenization Algorithm
-    * [ ] Split string into tokens
-    * [ ] Remove [!,'.?] characters
-    * [ ] Convert to lowercase
 
 ## Doing
 
@@ -36,3 +26,13 @@
 - Implement Data Analysis Algorithms
     * [x] 1. Algorithm to Process Speech Data
     * [x] 2. Algotrithms for Analysis Reporting
+- Develop Data Entry Menu
+    * [x] 1. Enter Speech Data
+    * [x] 2. Return to Log-In Menu
+    * [x] 3. Data Validation and Error Handling
+- Testing and QA
+    * [x] Test for bugs and usability issues.
+- Develop Tokenization Algorithm
+    * [x] Split string into tokens
+    * [x] Remove [!,'.?] characters
+    * [x] Convert to lowercase
